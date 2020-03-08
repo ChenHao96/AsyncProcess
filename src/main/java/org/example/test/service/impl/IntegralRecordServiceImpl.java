@@ -1,6 +1,5 @@
 package org.example.test.service.impl;
 
-import lombok.extern.slf4j.Slf4j;
 import org.example.test.entity.IntegralRecord;
 import org.example.test.entity.User;
 import org.example.test.entity.enums.IntegralOrderTypeEnum;
@@ -9,7 +8,6 @@ import org.example.test.service.IntegralRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-@Slf4j
 @Service
 public class IntegralRecordServiceImpl implements IntegralRecordService {
 

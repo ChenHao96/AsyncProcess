@@ -1,7 +1,6 @@
 package org.example.test.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import lombok.extern.slf4j.Slf4j;
 import org.example.test.entity.Wallet;
 import org.example.test.mapper.WalletMapper;
 import org.example.test.service.WalletService;
@@ -15,7 +14,6 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.concurrent.Future;
 
-@Slf4j
 @Service
 public class WalletServiceImpl implements WalletService {
 

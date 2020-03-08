@@ -3,7 +3,7 @@ package org.example.test.service;
 import org.example.test.entity.PayOrder;
 import org.example.test.entity.enums.PayOrderStatusEnum;
 
-public interface PayServiceAsync {
+public interface AsyncPayService {
 
-    PayOrderStatusEnum processPayOrderAsync(PayOrder payOrder);
+    PayOrderStatusEnum processPayOrder(PayOrder payOrder);
 }

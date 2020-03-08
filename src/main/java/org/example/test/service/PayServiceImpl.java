@@ -1,6 +1,5 @@
 package org.example.test.service;
 
-import lombok.extern.slf4j.Slf4j;
 import org.example.test.entity.PayOrder;
 import org.example.test.entity.User;
 import org.example.test.entity.enums.IntegralOrderTypeEnum;
@@ -10,12 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-
-@Slf4j
 @Service
-public class PayServiceImpl implements PayService, PayServiceAsync {
+public class PayServiceImpl implements PayService {
 
     @Autowired
     private PayOrderService payOrderService;
@@ -35,44 +30,9 @@ public class PayServiceImpl implements PayService, PayServiceAsync {
     @Autowired
     private ProductService productService;
 
-    @Autowired
-    private SuccessOrderProcess successOrderProcess;
-
     @Override
     @Transactional
-    public PayOrderStatusEnum processPayOrderAsync(PayOrder payOrder) {
-        PayOrderStatusEnum result = PayOrderStatusEnum.FAILED;
-        if (payOrder != null) {
-            boolean success = false;
-            Future<PayOrderStatusEnum> orderFuture = payOrderService.updatePayOrder(payOrder);
-            Future<Boolean> deductionFuture = walletService.payOrderDeduction(payOrder.getTotalPrice(), payOrder.getUserId());
-
-            try {
-                result = orderFuture.get();
-                if (PayOrderStatusEnum.CREATE.equals(result)) {
-                    if (deductionFuture.get()) {
-                        success = true;
-                        result = PayOrderStatusEnum.PAID;
-                        successOrderProcess.addSuccessPayOrder(payOrder);
-                    }
-                }
-            } catch (InterruptedException | ExecutionException e) {
-                log.warn("processPayOrderNumber:{}", e.getMessage());
-            }
-
-            if (!success) {
-                if (PayOrderStatusEnum.FAILED.equals(result)) {
-                    successOrderProcess.addFailPayOrder(payOrder);
-                }
-                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            }
-        }
-        return result;
-    }
-
-    @Override
-    @Transactional
-    public PayOrderStatusEnum processPayOrderNumber(String orderNumber) {
+    public PayOrderStatusEnum processPayOrder(String orderNumber) {
         PayOrderStatusEnum result = PayOrderStatusEnum.FAILED;
         PayOrder payOrder = payOrderService.queryPayOrderByNumber(orderNumber);
         if (payOrder != null) {

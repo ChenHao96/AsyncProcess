@@ -1,6 +1,5 @@
 package org.example.test.service.impl;
 
-import lombok.extern.slf4j.Slf4j;
 import org.example.test.entity.Product;
 import org.example.test.mapper.ProductMapper;
 import org.example.test.service.ProductService;
@@ -11,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.concurrent.Future;
 
-@Slf4j
 @Service
 public class ProductServiceImpl implements ProductService {
 

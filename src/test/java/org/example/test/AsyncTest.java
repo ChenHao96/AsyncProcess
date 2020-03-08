@@ -5,7 +5,7 @@ import org.example.test.entity.PayOrder;
 import org.example.test.entity.enums.PayOrderStatusEnum;
 import org.example.test.model.OrderParam;
 import org.example.test.service.AsyncBuyService;
-import org.example.test.service.PayServiceAsync;
+import org.example.test.service.AsyncPayService;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -16,20 +16,20 @@ public class AsyncTest extends TestData {
     private AsyncBuyService buyService;
 
     @Autowired
-    private PayServiceAsync payService;
+    private AsyncPayService payService;
 
     @Test
     public void test() {
         for (OrderParam param : testData) {
             long startTime = System.currentTimeMillis();
-            PayOrder order = buyService.panicBuyingAsync(param.getUserId(), param.getProductId(), param.getProductCount());
+            PayOrder order = buyService.panicBuying(param.getUserId(), param.getProductId(), param.getProductCount());
             log.info("{} panicBuying:{}, use time:{}", param.getIndex(), order, System.currentTimeMillis() - startTime);
             if (order == null) {
                 log.info("{} 订单创建失败, userId;{} productId:{}", param.getIndex(), param.getUserId(), param.getProductId());
                 continue;
             }
             startTime = System.currentTimeMillis();
-            PayOrderStatusEnum statusEnum = payService.processPayOrderAsync(order);
+            PayOrderStatusEnum statusEnum = payService.processPayOrder(order);
             log.info("{} processPayOrderNumber:{}, use time:{}", param.getIndex(), statusEnum, System.currentTimeMillis() - startTime);
             if (!PayOrderStatusEnum.PAID.equals(statusEnum)) {
                 log.info("{} 订单支付失败, userId;{} productId:{}", param.getIndex(), param.getUserId(), param.getProductId());

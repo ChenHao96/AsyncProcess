@@ -29,7 +29,7 @@ public class UsuallyTest extends TestData {
                 continue;
             }
             startTime = System.currentTimeMillis();
-            PayOrderStatusEnum statusEnum = payService.processPayOrderNumber(orderNumber);
+            PayOrderStatusEnum statusEnum = payService.processPayOrder(orderNumber);
             log.info("{} processPayOrderNumber:{}, use time:{}", param.getIndex(), statusEnum, System.currentTimeMillis() - startTime);
             if (!PayOrderStatusEnum.PAID.equals(statusEnum)) {
                 log.info("{} 订单支付失败, userId;{} productId:{}", param.getIndex(), param.getUserId(), param.getProductId());

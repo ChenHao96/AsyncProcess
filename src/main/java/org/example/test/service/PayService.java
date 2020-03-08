@@ -4,5 +4,5 @@ import org.example.test.entity.enums.PayOrderStatusEnum;
 
 public interface PayService {
 
-    PayOrderStatusEnum processPayOrderNumber(String orderNumber);
+    PayOrderStatusEnum processPayOrder(String orderNumber);
 }

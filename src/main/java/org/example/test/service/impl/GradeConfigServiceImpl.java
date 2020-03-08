@@ -1,7 +1,6 @@
 package org.example.test.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import lombok.extern.slf4j.Slf4j;
 import org.example.test.entity.GradeConfig;
 import org.example.test.entity.User;
 import org.example.test.mapper.GradeConfigMapper;
@@ -10,7 +9,6 @@ import org.example.test.service.GradeConfigService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-@Slf4j
 @Service
 public class GradeConfigServiceImpl implements GradeConfigService {
 

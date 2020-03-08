@@ -1,7 +1,6 @@
 package org.example.test.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import lombok.extern.slf4j.Slf4j;
 import org.example.test.entity.PayOrder;
 import org.example.test.entity.Product;
 import org.example.test.entity.enums.PayOrderStatusEnum;
@@ -17,7 +16,6 @@ import java.math.BigDecimal;
 import java.util.UUID;
 import java.util.concurrent.Future;
 
-@Slf4j
 @Service
 public class PayOrderServiceImpl implements PayOrderService {
 
