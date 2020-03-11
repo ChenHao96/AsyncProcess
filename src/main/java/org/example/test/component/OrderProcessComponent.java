@@ -39,9 +39,9 @@ public class OrderProcessComponent implements OrderPayFinishProcess, Runnable {
         this.runnable = true;
         this.executorService = Executors.newFixedThreadPool(this.proCoreCount);
         log.info("OrderProcess ExecutorService init success.");
-        for (int i = 0; i < this.proCoreCount; i++) {
-            this.executorService.submit(this);
-        }
+//        for (int i = 0; i < this.proCoreCount; i++) {
+//            this.executorService.submit(this);
+//        }
         log.info("OrderProcess ExecutorService process task:{}.", this.proCoreCount);
     }
 
