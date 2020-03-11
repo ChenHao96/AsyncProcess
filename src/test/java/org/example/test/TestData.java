@@ -13,7 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.*;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
@@ -28,9 +29,7 @@ public class TestData extends BaseTest {
 
     protected List<List<OrderParam>> testData;
 
-    protected ExecutorService executorService;
-
-    protected BlockingQueue<Future<Object>> futures;
+    protected BlockingQueue<Object> futures;
 
     protected final AtomicInteger buySuccess = new AtomicInteger();
     protected final AtomicInteger paySuccess = new AtomicInteger();
@@ -38,31 +37,29 @@ public class TestData extends BaseTest {
 
     @Before
     public void testBefore() {
-        final int count = 10;
-        final int item = 100;
+        final int queueCount = 20, taskCount = 100;
         Random random = new Random();
         List<User> users = userMapper.selectList(null);
         List<Product> products = productMapper.selectList(null);
-        testData = new ArrayList<>(count);
-        for (int i = 0; i < count; i++) {
-            List<OrderParam> list = new ArrayList<>(item);
-            for (int y = 0; y < item; y++) {
+        testData = new ArrayList<>(queueCount);
+        for (int i = 0; i < queueCount; i++) {
+            List<OrderParam> list = new ArrayList<>(taskCount);
+            for (int y = 0; y < taskCount; y++) {
                 Product product = products.get(random.nextInt(products.size()));
                 if (product.getSurplusStock() <= 0) continue;
                 OrderParam param = new OrderParam();
                 param.setProductId(product.getId());
+                param.setProductCount(random.nextInt(5));
                 param.setUserId(users.get(random.nextInt(users.size())).getId());
-                param.setProductCount(random.nextInt(product.getSurplusStock()));
                 list.add(param);
             }
             testData.add(list);
         }
-        futures = new LinkedBlockingQueue<>(count * item);
-        executorService = Executors.newFixedThreadPool(100);
+        futures = new LinkedBlockingQueue<>(queueCount * taskCount);
     }
 
     @After
     public void testAfter() {
-        log.info("test result: buy:{}, pay:{}, fail:{}", buySuccess, paySuccess, payFail);
+        log.info("test result: orderCount:{}, paySuccess:{}, payFail:{}", buySuccess, paySuccess, payFail);
     }
 }

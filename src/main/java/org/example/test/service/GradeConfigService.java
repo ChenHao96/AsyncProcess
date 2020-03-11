@@ -4,5 +4,5 @@ import org.example.test.entity.User;
 
 public interface GradeConfigService {
 
-    void updateUserGrade2(User user, Integer integral);
+    void updateUserGrade(User user, Integer integral);
 }

@@ -1,8 +1,7 @@
 package org.example.test.service;
 
+import org.example.test.component.OrderPayFinishProcess;
 import org.example.test.entity.PayOrder;
-import org.example.test.entity.User;
-import org.example.test.entity.enums.IntegralOrderTypeEnum;
 import org.example.test.entity.enums.PayOrderStatusEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,19 +15,10 @@ public class PayServiceImpl implements PayService {
     private PayOrderService payOrderService;
 
     @Autowired
-    private UserService userService;
-
-    @Autowired
     private WalletService walletService;
 
     @Autowired
-    private GradeConfigService gradeConfigService;
-
-    @Autowired
-    private IntegralRecordService integralRecordService;
-
-    @Autowired
-    private ProductService productService;
+    private OrderPayFinishProcess orderPayFinishProcess;
 
     @Override
     @Transactional
@@ -37,31 +27,27 @@ public class PayServiceImpl implements PayService {
         PayOrder payOrder = payOrderService.queryPayOrderByNumber(orderNumber);
         if (payOrder != null) {
             if (PayOrderStatusEnum.CREATE.equals(payOrder.getStatus())) {
-                int updateCount = 0;
                 final int databaseUpdateRow;
-                if (walletService.payOrderDeduction(payOrder.getUserId(), payOrder.getTotalPrice())) {//扣款成功
-                    databaseUpdateRow = 4;
-                    //1.1 修改订单为已支付
+                Integer walletId = walletService.tryDeduction(payOrder.getTotalPrice(), payOrder.getUserId());
+                int updateCount = 0;
+                if (walletId != null && walletId > 0) {//扣款成功
+                    databaseUpdateRow = 2;
+                    //1.扣款锁定
+                    updateCount += 1;
+                    payOrder.setWalletId(walletId);
+                    //2.修改订单已支付
                     payOrder.setStatus(PayOrderStatusEnum.PAID);
-                    //1.2 将库存提交
-                    updateCount += productService.commitStock2(payOrder.getProductId(), payOrder.getProductCount());
-
-                    User user = userService.queryUserById(payOrder.getUserId());
-                    //1.3 添加积分记录
-                    updateCount += integralRecordService.addIntegralRecord2(user, payOrder.getId(),
-                            payOrder.getIntegral(), IntegralOrderTypeEnum.PRODUCT);
-                    //1.4 修改用户消费积分和等级
-                    gradeConfigService.updateUserGrade2(user, payOrder.getIntegral());
-                    user.setIntegral(user.getIntegral() + payOrder.getIntegral());
-                    updateCount += userService.paySuccessUpdateUser(user);
                 } else {//扣款失败
                     databaseUpdateRow = 1;
-                    //2.1 修改订单为失败
+                    //1.修改订单失败
                     payOrder.setStatus(PayOrderStatusEnum.FAILED);
                 }
-                updateCount += payOrderService.updatePayOrder2(payOrder);
-                if (updateCount != databaseUpdateRow)
+                updateCount += payOrderService.updatePayOrder(payOrder);
+                if (updateCount != databaseUpdateRow) {
                     TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                } else {
+                    orderPayFinishProcess.addPendingOrder(payOrder);
+                }
             }
             result = payOrder.getStatus();
         }

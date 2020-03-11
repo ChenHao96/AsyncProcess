@@ -4,7 +4,6 @@ import org.example.test.entity.IntegralRecord;
 import org.example.test.entity.User;
 import org.example.test.entity.enums.IntegralOrderTypeEnum;
 import org.example.test.mapper.IntegralRecordMapper;
-import org.example.test.service.IntegralRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

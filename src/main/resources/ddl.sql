@@ -21,6 +21,7 @@ CREATE TABLE `pay_order` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int(10) unsigned NOT NULL COMMENT '用户id',
   `product_id` int(10) unsigned NOT NULL COMMENT '商品id',
+  `wallet_id` int(10) unsigned COMMENT '用户钱包id',
   `order_number` varchar(255) NOT NULL COMMENT '订单号',
   `integral` int(11) NOT NULL DEFAULT '0' COMMENT '商品的积分',
   `product_count` int(10) unsigned NOT NULL COMMENT '商品数量',

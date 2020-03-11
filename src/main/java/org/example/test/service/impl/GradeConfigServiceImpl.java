@@ -18,7 +18,7 @@ public class GradeConfigServiceImpl implements GradeConfigService {
     @Autowired
     private UserMapper userMapper;
 
-    public void updateUserGrade2(User user, Integer integral) {
+    public void updateUserGrade(User user, Integer integral) {
         if (user == null) return;
         QueryWrapper<GradeConfig> queryWrapper = new QueryWrapper<>();
         queryWrapper.le("integral", user.getIntegral() + integral);

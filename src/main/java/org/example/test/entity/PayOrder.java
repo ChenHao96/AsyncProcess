@@ -23,6 +23,8 @@ public class PayOrder implements Serializable {
 
     private Integer userId;
 
+    private Integer walletId;
+
     private String orderNumber;
 
     private Integer integral;

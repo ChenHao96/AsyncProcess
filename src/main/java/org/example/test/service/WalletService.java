@@ -1,11 +1,19 @@
 package org.example.test.service;
 
 import java.math.BigDecimal;
-import java.util.concurrent.Future;
 
 public interface WalletService {
 
-    Future<Boolean> payOrderDeduction(BigDecimal money, Integer userId);
+    /**
+     * 钱包扣款
+     *
+     * @param money  金额
+     * @param userId 用户id
+     * @return 用户钱包的id
+     */
+    Integer tryDeduction(BigDecimal money, Integer userId);
 
-    boolean payOrderDeduction(Integer userId, BigDecimal money);
+    int commitDeduction(Integer walletId, BigDecimal money);
+
+    int cancelDeduction(Integer walletId, BigDecimal money);
 }
