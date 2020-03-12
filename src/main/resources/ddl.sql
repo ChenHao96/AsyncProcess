@@ -56,8 +56,6 @@ CREATE TABLE `users` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户信息表';
 
-alter table `users` add `version` int(11) NOT NULL DEFAULT '0' COMMENT '乐观锁';
-
 CREATE TABLE `wallet` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int(10) unsigned NOT NULL COMMENT '用户id',
