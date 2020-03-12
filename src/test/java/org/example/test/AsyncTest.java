@@ -1,13 +1,13 @@
 package org.example.test;
 
 import lombok.extern.slf4j.Slf4j;
+import org.example.test.entity.PayOrder;
 import org.example.test.entity.enums.PayOrderStatusEnum;
 import org.example.test.model.OrderParam;
-import org.example.test.service.impl.usually.BuyService;
-import org.example.test.service.impl.usually.PayService;
+import org.example.test.service.impl.async.AsyncBuyService;
+import org.example.test.service.impl.async.AsyncPayService;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -17,13 +17,13 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
-public class UsuallyTest extends TestData {
+public class AsyncTest extends TestData {
 
     @Autowired
-    private BuyService buyService;
+    private AsyncBuyService buyService;
 
     @Autowired
-    private PayService payService;
+    private AsyncPayService payService;
 
     @Test
     public void test() throws InterruptedException {
@@ -41,11 +41,11 @@ public class UsuallyTest extends TestData {
                     for (final OrderParam param : data) {
                         dataCount.incrementAndGet();
                         if (param.getProductCount() == 0) continue;
-                        String orderNumber = buyService.panicBuying(param.getUserId(), param.getProductId(), param.getProductCount());
+                        PayOrder order = buyService.panicBuying(param.getUserId(), param.getProductId(), param.getProductCount());
                         panicBuyingResponse.incrementAndGet();
-                        if (!StringUtils.isEmpty(orderNumber)) {
+                        if (order != null) {
                             buySuccess.incrementAndGet();
-                            futures.add(orderNumber);
+                            futures.add(order);
                         }
                     }
                 } catch (Exception e) {
@@ -58,17 +58,14 @@ public class UsuallyTest extends TestData {
             executorService.submit(() -> {
                 try {
                     while (true) {
-                        Object order = futures.poll(3, TimeUnit.SECONDS);
-                        if (order == null) return;
-                        String orderNumber = (String) order;
-                        if (!StringUtils.isEmpty(orderNumber)) {
-                            pollOrderNumber.incrementAndGet();
-                            PayOrderStatusEnum statusEnum = payService.processPayOrder(orderNumber);
-                            if (PayOrderStatusEnum.PAID.equals(statusEnum)) {
-                                paySuccess.incrementAndGet();
-                            } else {
-                                payFail.incrementAndGet();
-                            }
+                        Object bean = futures.poll(3, TimeUnit.SECONDS);
+                        if (bean == null) return;
+                        pollOrderNumber.incrementAndGet();
+                        PayOrderStatusEnum statusEnum = payService.processPayOrder((PayOrder) bean);
+                        if (PayOrderStatusEnum.PAID.equals(statusEnum)) {
+                            paySuccess.incrementAndGet();
+                        } else {
+                            payFail.incrementAndGet();
                         }
                     }
                 } catch (InterruptedException e) {

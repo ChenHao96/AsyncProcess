@@ -1,4 +1,4 @@
-package org.example.test.service;
+package org.example.test.service.impl.usually;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +13,7 @@ import org.example.test.mapper.GradeConfigMapper;
 import org.example.test.mapper.IntegralRecordMapper;
 import org.example.test.mapper.PayOrderMapper;
 import org.example.test.mapper.UserMapper;
+import org.example.test.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
