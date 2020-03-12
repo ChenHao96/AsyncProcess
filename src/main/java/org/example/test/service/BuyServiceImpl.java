@@ -4,6 +4,7 @@ import org.example.test.entity.User;
 import org.example.test.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
@@ -22,7 +23,7 @@ public class BuyServiceImpl implements BuyService {
     private ProductService productService;
 
     @Override
-    @Transactional
+    @Transactional(isolation = Isolation.READ_UNCOMMITTED)
     public String panicBuying(Integer userId, Integer productId, Integer productCount) {
 
         //校验用户有效性

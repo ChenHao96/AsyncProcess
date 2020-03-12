@@ -3,6 +3,7 @@ package org.example.test.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.Version;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -23,4 +24,7 @@ public class User implements Serializable {
     private Integer grade;
 
     private Integer orderCount;
+
+    @Version
+    private Integer version;
 }

@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public enum PayOrderStatusEnum {
-    CREATE(0), PAID(1), FAILED(2);
+    CREATE(0), FAILED(1), PAID(2), PENDING(3);
 
     private static final Map<Integer, PayOrderStatusEnum> codeLookup;
 

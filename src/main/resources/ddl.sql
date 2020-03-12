@@ -52,8 +52,11 @@ CREATE TABLE `users` (
   `integral` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '剩余积分',
   `grade` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '等级',
   `order_count` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '订单数量',
+  `version` int(11) NOT NULL DEFAULT '0' COMMENT '乐观锁',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户信息表';
+
+alter table `users` add `version` int(11) NOT NULL DEFAULT '0' COMMENT '乐观锁';
 
 CREATE TABLE `wallet` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,

@@ -1,10 +1,10 @@
 package org.example.test.service;
 
-import org.example.test.component.OrderPayFinishProcess;
 import org.example.test.entity.PayOrder;
 import org.example.test.entity.enums.PayOrderStatusEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
@@ -18,10 +18,10 @@ public class PayServiceImpl implements PayService {
     private WalletService walletService;
 
     @Autowired
-    private OrderPayFinishProcess orderPayFinishProcess;
+    private OrderPayProcess processService;
 
     @Override
-    @Transactional
+    @Transactional(isolation = Isolation.READ_UNCOMMITTED)
     public PayOrderStatusEnum processPayOrder(String orderNumber) {
         PayOrderStatusEnum result = PayOrderStatusEnum.FAILED;
         PayOrder payOrder = payOrderService.queryPayOrderByNumber(orderNumber);
@@ -35,18 +35,17 @@ public class PayServiceImpl implements PayService {
                     //1.扣款锁定
                     updateCount += 1;
                     payOrder.setWalletId(walletId);
-                    //2.修改订单已支付
+                    //2.修改订单待处理
                     payOrder.setStatus(PayOrderStatusEnum.PAID);
-                } else {//扣款失败
-                    databaseUpdateRow = 1;
-                    //1.修改订单失败
-                    payOrder.setStatus(PayOrderStatusEnum.FAILED);
+                    updateCount += payOrderService.updatePayOrder(payOrder);
+                } else {
+                    databaseUpdateRow = 0;
                 }
-                updateCount += payOrderService.updatePayOrder(payOrder);
+
                 if (updateCount != databaseUpdateRow) {
                     TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
                 } else {
-                    orderPayFinishProcess.addPendingOrder(payOrder);
+                    processService.addPendingTaskBean(payOrder.getId());
                 }
             }
             result = payOrder.getStatus();

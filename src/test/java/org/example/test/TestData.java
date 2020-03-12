@@ -37,7 +37,7 @@ public class TestData extends BaseTest {
 
     @Before
     public void testBefore() {
-        final int queueCount = 4, taskCount = 4;
+        final int queueCount = 10, taskCount = 100;
         Random random = new Random();
         List<User> users = userMapper.selectList(null);
         List<Product> products = productMapper.selectList(null);

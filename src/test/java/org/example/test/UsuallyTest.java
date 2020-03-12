@@ -66,7 +66,7 @@ public class UsuallyTest extends TestData {
                             PayOrderStatusEnum statusEnum = payService.processPayOrder(orderNumber);
                             if (PayOrderStatusEnum.PAID.equals(statusEnum)) {
                                 paySuccess.incrementAndGet();
-                            } else if (PayOrderStatusEnum.FAILED.equals(statusEnum)) {
+                            } else {
                                 payFail.incrementAndGet();
                             }
                         }

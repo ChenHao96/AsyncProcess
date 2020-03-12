@@ -26,22 +26,26 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public int commitStock(Integer productId, Integer productCount) {
-        Product product = productMapper.selectById(productId);
-        if (product != null && product.getSurplusStock() >= productCount) {
-            product.setCommitStock(product.getCommitStock() - productCount);
-            product.setSurplusStock(product.getSurplusStock() - productCount);
-            return productMapper.updateById(product);
-        }
-        return 0;
+        return productMapper.updateStockCommit(productId,productCount);
+//        Product product = productMapper.selectById(productId);
+//        if (product != null && product.getSurplusStock() >= productCount) {
+//            product.setCommitStock(product.getCommitStock() - productCount);
+//            product.setSurplusStock(product.getSurplusStock() - productCount);
+//            return productMapper.updateById(product);
+//        }
+//        return 0;
     }
 
     @Override
     public int cancelStock(Integer productId, Integer productCount) {
-        Product product = productMapper.selectById(productId);
-        if (product != null && product.getCommitStock() >= productCount) {
-            product.setCommitStock(product.getCommitStock() - productCount);
-            return productMapper.updateById(product);
-        }
-        return 0;
+        return productMapper.updateStockCancel(productId,productCount);
+
+
+//        Product product = productMapper.selectById(productId);
+//        if (product != null && product.getCommitStock() >= productCount) {
+//            product.setCommitStock(product.getCommitStock() - productCount);
+//            return productMapper.updateById(product);
+//        }
+//        return 0;
     }
 }
