@@ -17,9 +17,8 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
-
 @Slf4j
-public class TestData extends BaseTest {
+public abstract class TestData extends BaseTest {
 
     @Autowired
     private UserMapper userMapper;
